@@ -12,12 +12,15 @@ import Map from "./Map";
 import Table from "./Table";
 import LineGraph from "./LineGraph";
 import { sortData } from "./util";
+import "leaflet/dist/leaflet.css";
 
 function App() {
   const [countries, setCountries] = useState([]); // e.g. Australia/China...
   const [country, setCountry] = useState("worldwide"); // e.g. AU/US/CN...
   const [countryInfo, setCountryInfo] = useState({});
   const [tableData, setTableData] = useState([]);
+  const [mapCenter, setMapCenter] = useState({ lat: 34.80746, lng: -40.4796 });
+  const [mapZoom, setMapZoom] = useState(3);
 
   useEffect(() => {
     fetch("https://disease.sh/v3/covid-19/all")
@@ -35,6 +38,7 @@ function App() {
           const countries = data.map((country) => ({
             name: country.country,
             value: country.countryInfo.iso2,
+            _id: country.countryInfo._id,
           }));
 
           const sortedData = sortData(data);
@@ -59,6 +63,9 @@ function App() {
       .then((data) => {
         setCountryInfo(data);
         setCountry(countryCode); // update the dropdown field
+        console.log(data.countryInfo);
+        setMapZoom(4);
+        setMapCenter([data.countryInfo.lat, data.countryInfo.long]);
       });
   };
 
@@ -77,7 +84,9 @@ function App() {
 
               {/* loop through all the countries and show a dropdown list of the options */}
               {countries.map((country) => (
-                <MenuItem value={country.value}>{country.name}</MenuItem>
+                <MenuItem key={country._id} value={country.value}>
+                  {country.name}
+                </MenuItem>
               ))}
             </Select>
           </FormControl>
@@ -101,7 +110,7 @@ function App() {
           />
         </div>
 
-        <Map />
+        <Map center={mapCenter} zoom={mapZoom} />
       </div>
 
       <Card className="app_right">

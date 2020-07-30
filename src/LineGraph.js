@@ -49,17 +49,22 @@ const options = {
 
 const buildChartData = (data, casesType) => {
   const chartData = [];
-  let lastDataPoint; // the data number from yesterday
-  for (let date in data.cases) {
+
+  // the data number from yesterday
+  let lastDataPoint;
+
+  //the data set here is dictionary, the key is "date"
+  for (let date in data[casesType]) {
     if (lastDataPoint) {
       const newDataPoint = {
         x: date,
         y: data[casesType][date] - lastDataPoint,
         // since the number is accumulated, we need to do Maths for getting the number of new cases in each day.
+        // So the graph will start showing from second day's data
       };
       chartData.push(newDataPoint);
     }
-    lastDataPoint = data[casesType][date]; // get the number
+    lastDataPoint = data[casesType][date]; // get the first number from data
   }
   return chartData;
 };
@@ -75,7 +80,6 @@ function LineGraph({ casesType = "cases" }) {
         .then((data) => {
           let chartData = buildChartData(data, casesType);
           setData(chartData);
-          console.log(chartData);
         });
     };
     fetchData();
