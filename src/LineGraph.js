@@ -70,7 +70,7 @@ const buildChartData = (data, casesType) => {
 };
 
 // here we set default casesType as "cases" since the API has 3 casesTypes: "cases", "recovered", "death"
-function LineGraph({ casesType = "cases" }) {
+function LineGraph({ casesType = "cases", ...props }) {
   const [data, setData] = useState({});
 
   useEffect(() => {
@@ -83,19 +83,19 @@ function LineGraph({ casesType = "cases" }) {
         });
     };
     fetchData();
-  }, []);
+  }, [casesType]);
 
   return (
-    <div>
+    <div className={props.className}>
       {data?.length > 0 && (
         <Line
           options={options}
           data={{
             datasets: [
               {
-                backgroundColor: "rgba(204, 16, 52, 0.5",
-                borderColor: "#CC1034",
                 data: data,
+                backgroundColor: "rgba(204, 16, 52, 0.5)",
+                borderColor: "#CC1034",
               },
             ],
           }}
