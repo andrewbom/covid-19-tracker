@@ -25,7 +25,7 @@ function App() {
   const [casesType, setCasesType] = useState("cases");
 
   useEffect(() => {
-    fetch("https://disease.sh/v3/covid-19/all")
+    fetch("https://disease.sh/v3/covid-19/all?yesterday=true")
       .then((response) => response.json())
       .then((data) => {
         setCountryInfo(data);
@@ -58,8 +58,8 @@ function App() {
 
     const url =
       countryCode === "worldwide"
-        ? "https://disease.sh/v3/covid-19/all"
-        : `https://disease.sh/v3/covid-19/countries/${countryCode}`;
+        ? "https://disease.sh/v3/covid-19/all?yesterday=true"
+        : `https://disease.sh/v3/covid-19/countries/${countryCode}?yesterday=true`;
 
     await fetch(url)
       .then((response) => response.json())
@@ -104,14 +104,14 @@ function App() {
             isRed
             active={casesType === "cases"}
             onClick={(e) => setCasesType("cases")}
-            title="Coronavirus Cases"
+            title="Yesterday Coronavirus Cases"
             cases={prettyPrintStat(countryInfo.todayCases)}
             total={prettyPrintStat(countryInfo.cases)}
           />
           <InfoBox
             active={casesType === "recovered"}
             onClick={(e) => setCasesType("recovered")}
-            title="Recovered"
+            title="Yesterday Recovered"
             cases={prettyPrintStat(countryInfo.todayRecovered)}
             total={prettyPrintStat(countryInfo.recovered)}
           />
@@ -119,7 +119,7 @@ function App() {
             isGray
             active={casesType === "deaths"}
             onClick={(e) => setCasesType("deaths")}
-            title="Deaths"
+            title="Yesterday Deaths"
             cases={prettyPrintStat(countryInfo.todayDeaths)}
             total={prettyPrintStat(countryInfo.deaths)}
           />
